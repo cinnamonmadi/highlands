@@ -1,4 +1,5 @@
 #include "global.h"
+#include "render.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
@@ -25,6 +26,8 @@ float delta = 0.0f;
 float deltas = 0.0f;
 float dps = 0.0f;
 
+void render();
+
 bool engine_init();
 void engine_quit();
 void engine_set_resolution(int width, int height);
@@ -45,13 +48,21 @@ int main() {
             }
         }
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-
-        SDL_RenderPresent(renderer);
-
+        render();
         engine_clock_tick();
     }
+}
+
+// Game loop functions
+void render() {
+    render_clear();
+
+    // Render FPS
+    char fps_text[32];
+    sprintf(fps_text, "FPS: %i DPS: %f", fps, dps);
+    render_text(fps_text, COLOR_WHITE, 0, 0);
+
+    render_present();
 }
 
 // Engine functions
@@ -82,10 +93,14 @@ bool engine_init() {
         return false;
     }
 
+    render_init();
+
     return true;
 }
 
 void engine_quit() {
+    render_quit();
+
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
 
@@ -120,8 +135,6 @@ void engine_clock_tick() {
         frames = 0;
         deltas = 0;
         last_second_time += 1.0;
-
-        printf("FPS: %i DPS: %f\n", fps, dps);
     }
 
     // Record the delta time for consistent game logi
