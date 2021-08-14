@@ -5,7 +5,7 @@ const SpriteData sprite_data[SPRITE_COUNT] = {
         .path = "./res/gfx/prince.png",
         .frame_size = { 24, 24 },
         .frame_count = 4,
-        .fps = 10
+        .fps = 7
     }
 };
 
