@@ -1,4 +1,5 @@
 #include "global.h"
+#include "sprite.h"
 #include "render.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -26,6 +27,8 @@ float delta = 0.0f;
 float deltas = 0.0f;
 float dps = 0.0f;
 
+Animation prince_animation;
+
 void render();
 
 bool engine_init();
@@ -40,6 +43,7 @@ int main() {
         return 0;
     }
 
+    prince_animation = sprite_animation_init(SPRITE_PRINCE);
     while(engine_running) {
         SDL_Event e;
         while(SDL_PollEvent(&e) != 0) {
@@ -47,6 +51,8 @@ int main() {
                 engine_running = false;
             }
         }
+
+        sprite_animation_update(&prince_animation, delta);
 
         render();
         engine_clock_tick();
@@ -56,6 +62,8 @@ int main() {
 // Game loop functions
 void render() {
     render_clear();
+
+    render_sprite_animation(prince_animation, 10, 10);
 
     // Render FPS
     char fps_text[32];
@@ -92,6 +100,8 @@ bool engine_init() {
         printf("Unable to initialize engine!\n");
         return false;
     }
+
+    engine_set_resolution(1280, 720);
 
     render_init();
 
