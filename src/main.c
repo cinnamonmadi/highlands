@@ -1,6 +1,8 @@
 #include "global.h"
 #include "sprite.h"
 #include "render.h"
+#include "render_campaign.h"
+#include "campaign.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
@@ -10,6 +12,7 @@
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 360;
 
+// Engine variables
 SDL_Window* window;
 SDL_Renderer* renderer;
 
@@ -27,7 +30,8 @@ float delta = 0.0f;
 float deltas = 0.0f;
 float dps = 0.0f;
 
-Animation prince_animation;
+// Game state variables
+CampaignState state;
 
 void render();
 
@@ -43,7 +47,8 @@ int main() {
         return 0;
     }
 
-    prince_animation = sprite_animation_init(SPRITE_PRINCE);
+    state = campaign_state_init();
+
     while(engine_running) {
         SDL_Event e;
         while(SDL_PollEvent(&e) != 0) {
@@ -51,8 +56,6 @@ int main() {
                 engine_running = false;
             }
         }
-
-        sprite_animation_update(&prince_animation, delta);
 
         render();
         engine_clock_tick();
@@ -63,7 +66,7 @@ int main() {
 void render() {
     render_clear();
 
-    render_sprite_animation(prince_animation, 10, 10);
+    render_campaign_state(&state);
 
     // Render FPS
     char fps_text[32];

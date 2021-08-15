@@ -95,11 +95,11 @@ void render_text(const char* text, SDL_Color color, int x, int y) {
 
 // Sprite rendering functions
 
-void render_sprite(Sprite sprite, int x, int y) {
-    render_sprite_frame(sprite, 0, x, y);
+void render_sprite(Sprite sprite, vec2 position) {
+    render_sprite_frame(sprite, 0, position);
 }
 
-void render_sprite_frame(Sprite sprite, int frame, int x, int y) {
+void render_sprite_frame(Sprite sprite, int frame, vec2 position) {
     int frame_long_x = sprite_data[sprite].frame_size[0] * frame;
     SDL_Rect source_rect = (SDL_Rect){
         .x = frame_long_x % sprite_textures[sprite].width,
@@ -108,8 +108,8 @@ void render_sprite_frame(Sprite sprite, int frame, int x, int y) {
         .h = sprite_data[sprite].frame_size[1]
     };
     SDL_Rect dest_rect = (SDL_Rect) {
-        .x = x,
-        .y = y,
+        .x = position.x,
+        .y = position.y,
         .w = source_rect.w,
         .h = source_rect.h
     };
@@ -117,6 +117,6 @@ void render_sprite_frame(Sprite sprite, int frame, int x, int y) {
     SDL_RenderCopy(renderer, sprite_textures[sprite].texture, &source_rect, &dest_rect);
 }
 
-void render_sprite_animation(Animation animation, int x, int y) {
-    render_sprite_frame(animation.sprite, animation.frame, x, y);
+void render_sprite_animation(Animation animation, vec2 position) {
+    render_sprite_frame(animation.sprite, animation.frame, position);
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 typedef enum Sprite {
+    SPRITE_TILESET,
     SPRITE_PRINCE,
     SPRITE_COUNT
 } Sprite;

@@ -1,6 +1,14 @@
 #include "sprite.h"
 
+#include "global.h"
+
 const SpriteData sprite_data[SPRITE_COUNT] = {
+    (SpriteData) {
+        .path = "./res/gfx/tileset.png",
+        .frame_size = { 32, 32 },
+        .frame_count = 4,
+        .fps = 1
+    },
     (SpriteData) {
         .path = "./res/gfx/prince.png",
         .frame_size = { 24, 24 },
