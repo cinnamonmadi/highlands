@@ -58,6 +58,10 @@ int main() {
         render();
         engine_clock_tick();
     }
+
+    campaign_state_free(&state);
+
+    return 0;
 }
 
 void input() {

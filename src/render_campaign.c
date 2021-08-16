@@ -7,9 +7,11 @@
 #include <math.h>
 
 void render_map(CampaignState* state);
+void render_units(CampaignState* state);
 
 void render_campaign_state(CampaignState* state) {
     render_map(state);
+    render_units(state);
 }
 
 void render_map(CampaignState* state) {
@@ -29,6 +31,18 @@ void render_map(CampaignState* state) {
                                 vec2_scale((vec2) { .x = x, .y = y }, TILE_SIZE),
                                 state->camera_position);
             render_sprite_frame(SPRITE_TILESET, state->map[y][x], render_pos);
+        }
+    }
+}
+
+void render_units(CampaignState* state) {
+    for(int i = 0; i < state->unit_size; i++) {
+        vec2 unit_render_pos = vec2_sub(state->units[i].position, state->camera_position);
+        const SpriteData* unit_sprite_data = &sprite_data[state->units[i].animation.sprite];
+
+        SDL_Rect unit_rect = (SDL_Rect) { .x = unit_render_pos.x, .y = unit_render_pos.y, .w = unit_sprite_data->frame_size[0], .h = unit_sprite_data->frame_size[1] };
+        if(is_rect_in_screen(unit_rect)) {
+            render_sprite_animation(state->units[i].animation, unit_render_pos);
         }
     }
 }

@@ -2,6 +2,7 @@
 
 #include <math.h>
 
+const vec2 VEC2_NULL = (vec2){ .x = -1, .y = -1 };
 const vec2 VEC2_ZERO = (vec2){ .x = 0, .y = 0 };
 
 // Vector functions
@@ -23,12 +24,24 @@ vec2 vec2_normalized(vec2 v) {
     return (vec2) { .x = v.x / length, .y = v.y / length };
 }
 
+vec2 vec2_direction(vec2 a, vec2 b) {
+    return vec2_normalized(vec2_sub(b, a));
+}
+
 float vec2_length(vec2 v) {
     return sqrt((v.x * v.x) + (v.y * v.y));
 }
 
+float vec2_distance(vec2 a, vec2 b){
+    return vec2_length(vec2_sub(a, b));
+}
+
 vec2 vec2_clamp(vec2 value, vec2 min, vec2 max) {
     return (vec2) { .x = clamp(value.x, min.x, max.x), .y = clamp(value.y, min.y, max.y) };
+}
+
+bool vec2_equals(vec2 a, vec2 b) {
+    return a.x == b.x && a.y == b.y;
 }
 
 // Utility math
@@ -47,6 +60,13 @@ bool is_rect_collision(SDL_Rect a, SDL_Rect b) {
              b.x + b.w <= a.x ||
              a.y + a.h <= b.y ||
              b.y + b.h <= a.y);
+}
+
+bool is_rect_in_screen(SDL_Rect a) {
+    return !(a.x + a.w <= 0 ||
+             SCREEN_WIDTH <= a.x ||
+             a.y + a.h <= 0 ||
+             SCREEN_HEIGHT <= a.y);
 }
 
 bool is_point_in_rect(vec2 v, SDL_Rect r) {
