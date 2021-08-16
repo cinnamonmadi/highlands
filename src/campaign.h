@@ -19,6 +19,9 @@ typedef struct CampaignState {
     vec2 camera_velocity;
     vec2 camera_max;
 
+    vec2 drag_start;
+    vec2 drag_end;
+
     Unit* units;
     int unit_size;
 } CampaignState;

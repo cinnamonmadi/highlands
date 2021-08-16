@@ -35,6 +35,9 @@ CampaignState campaign_state_init() {
     state.camera_velocity = VEC2_ZERO;
     state.camera_max = (vec2) { .x = (TILE_SIZE * state.map_width) - SCREEN_WIDTH, .y = (TILE_SIZE * state.map_height) - SCREEN_HEIGHT };
 
+    state.drag_start = VEC2_NULL;
+    state.drag_end = VEC2_NULL;
+
     state.units = malloc(UNIT_CAPACITY * sizeof(Unit));
     state.units[0] = unit_init((vec2){ .x = 10, .y = 10 });
     state.units[1] = unit_init((vec2){ .x = 40, .y = 25 });
@@ -57,6 +60,11 @@ void campaign_state_handle_input(CampaignState* state, SDL_Event e) {
     if(e.type == SDL_MOUSEMOTION) {
         state->camera_velocity = VEC2_ZERO;
 
+        if(!vec2_equals(state->drag_start, VEC2_NULL)) {
+            state->drag_end = (vec2) { .x = e.motion.x, .y = e.motion.y };
+            return;
+        }
+
         if(e.motion.x == 0) {
             state->camera_velocity.x = -CAMERA_SPEED;
         } else if(e.motion.x == SCREEN_WIDTH - 1) {
@@ -66,6 +74,18 @@ void campaign_state_handle_input(CampaignState* state, SDL_Event e) {
             state->camera_velocity.y = -CAMERA_SPEED;
         } else if(e.motion.y == SCREEN_HEIGHT - 1) {
             state->camera_velocity.y = CAMERA_SPEED;
+        }
+
+    } else if(e.type == SDL_MOUSEBUTTONDOWN) {
+        if(e.button.button == SDL_BUTTON_LEFT) {
+            state->drag_start = (vec2) { .x = e.button.x, .y = e.button.y };
+            state->drag_end = state->drag_start;
+        }
+
+    }else if(e.type == SDL_MOUSEBUTTONUP) {
+        if(e.button.button == SDL_BUTTON_LEFT) {
+            state->drag_start = VEC2_NULL;
+            state->drag_end = VEC2_NULL;
         }
     }
 }

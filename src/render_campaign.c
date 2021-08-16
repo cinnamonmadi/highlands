@@ -12,6 +12,12 @@ void render_units(CampaignState* state);
 void render_campaign_state(CampaignState* state) {
     render_map(state);
     render_units(state);
+
+    if(!vec2_equals(state->drag_start, VEC2_NULL)) {
+        SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+        SDL_Rect drag_rect = to_rect(state->drag_start, state->drag_end);
+        SDL_RenderDrawRect(renderer, &drag_rect);
+    }
 }
 
 void render_map(CampaignState* state) {

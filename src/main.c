@@ -8,6 +8,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 360;
@@ -36,15 +37,15 @@ CampaignState state;
 void input();
 void render();
 
-bool engine_init();
+bool engine_init(int argc, char** argv);
 void engine_quit();
 void engine_set_resolution(int width, int height);
 void engine_toggle_fullscreen();
 void engine_clock_tick();
 
-int main() {
+int main(int argc, char** argv) {
 
-    if(!engine_init()) {
+    if(!engine_init(argc, argv)) {
         return 0;
     }
 
@@ -99,7 +100,65 @@ void render() {
 
 // Engine functions
 
-bool engine_init() {
+bool engine_init(int argc, char** argv) {
+    bool init_fullscreened = false;
+    int resolution_width = 640;
+    int resolution_height = 360;
+
+    // Parse system arguments
+    for(int i = 1; i < argc; i++) {
+        if(strcmp(argv[i], "--fullscreen") == 0) {
+            init_fullscreened = true;
+        } else if(strcmp(argv[i], "--resolution") == 0) {
+            if(i + 1 == argc) {
+                printf("No resolution was specified!\n");
+                return false;
+            }
+            i++;
+
+            int arg_index = 0;
+            int buffer_index = 0;
+            char screen_width_buffer[8];
+            char screen_height_buffer[8];
+
+            // Expects format <SCREEN_WIDTH>x<SCREEN_HEIGHT>
+            // Traverse the argument character by character until we find the 'x', placing each character we pass into the screen width buffer
+            while(argv[i][arg_index] != 'x' && argv[i][arg_index] != '\0') {
+                if(buffer_index == 7 || argv[i][arg_index] < '0' || argv[i][arg_index] > '9') {
+                    printf("Incorrect resolution format! %c\n", argv[i][arg_index]);
+                    return false;
+                }
+                screen_width_buffer[buffer_index] = argv[i][arg_index];
+                buffer_index++;
+                arg_index++;
+            }
+            screen_width_buffer[buffer_index] = '\0';
+
+            // Check that we found an x at all
+            if(argv[i][arg_index] == '\0') {
+                printf("Incorrect resolution format!\n");
+                return false;
+            }
+
+            // Traverse the rest of the argument and place each character into the screen height buffer
+            arg_index++;
+            buffer_index = 0;
+            while(argv[i][arg_index] != '\0') {
+                if(buffer_index == 7 || argv[i][arg_index] < '0' || argv[i][arg_index] > '9') {
+                    printf("Incorrect resolution format!\n");
+                    return false;
+                }
+                screen_height_buffer[buffer_index] = argv[i][arg_index];
+                buffer_index++;
+                arg_index++;
+            }
+            screen_height_buffer[buffer_index] = '\0';
+
+            resolution_width = atoi(screen_width_buffer);
+            resolution_height = atoi(screen_height_buffer);
+        }
+    }
+
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
         printf("Unable to initialize SDL! SDL Error: %s\n", SDL_GetError());
         return false;
@@ -125,7 +184,10 @@ bool engine_init() {
         return false;
     }
 
-    // engine_set_resolution(1280, 720);
+    engine_set_resolution(resolution_width, resolution_height);
+    if(init_fullscreened) {
+        engine_toggle_fullscreen();
+    }
 
     render_init();
 

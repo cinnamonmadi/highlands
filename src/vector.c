@@ -44,15 +44,15 @@ bool vec2_equals(vec2 a, vec2 b) {
     return a.x == b.x && a.y == b.y;
 }
 
-// Utility math
+// Rectangle functions
 
-int clamp(int value, int lower, int upper) {
-    if(value < lower) {
-        return lower;
-    } else if(value > upper) {
-        return upper;
-    }
-    return value;
+SDL_Rect to_rect(vec2 a, vec2 b) {
+    return (SDL_Rect) {
+        .x = min(a.x, b.x),
+        .y = min(a.y, b.y),
+        .w = abs(a.x - b.x),
+        .h = abs(a.y - b.y)
+    };
 }
 
 bool is_rect_collision(SDL_Rect a, SDL_Rect b) {
@@ -74,4 +74,31 @@ bool is_point_in_rect(vec2 v, SDL_Rect r) {
              v.x > r.x + r.w ||
              v.y < r.y ||
              v.y > r.y + r.h);
+}
+
+// Utility math
+
+int min(int a, int b) {
+    if(a <= b){
+        return a;
+    } else {
+        return b;
+    }
+}
+
+int max(int a, int b) {
+    if(a >= b) {
+        return a;
+    } else {
+        return b;
+    }
+}
+
+int clamp(int value, int lower, int upper) {
+    if(value < lower) {
+        return lower;
+    } else if(value > upper) {
+        return upper;
+    }
+    return value;
 }

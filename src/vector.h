@@ -22,7 +22,11 @@ float vec2_distance(vec2 a, vec2 b);
 vec2 vec2_clamp(vec2 value, vec2 min, vec2 max);
 bool vec2_equals(vec2 a, vec2 b);
 
-int clamp(int value, int lower, int upper);
+SDL_Rect to_rect(vec2 a, vec2 b);
 bool is_rect_collision(SDL_Rect a, SDL_Rect b);
 bool is_rect_in_screen(SDL_Rect a);
 bool is_point_in_rect(vec2 v, SDL_Rect r);
+
+int min(int a, int b);
+int max(int a, int b);
+int clamp(int value, int lower, int upper);
