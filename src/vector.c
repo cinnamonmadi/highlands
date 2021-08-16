@@ -27,7 +27,20 @@ float vec2_length(vec2 v) {
     return sqrt((v.x * v.x) + (v.y * v.y));
 }
 
+vec2 vec2_clamp(vec2 value, vec2 min, vec2 max) {
+    return (vec2) { .x = clamp(value.x, min.x, max.x), .y = clamp(value.y, min.y, max.y) };
+}
+
 // Utility math
+
+int clamp(int value, int lower, int upper) {
+    if(value < lower) {
+        return lower;
+    } else if(value > upper) {
+        return upper;
+    }
+    return value;
+}
 
 bool is_rect_collision(SDL_Rect a, SDL_Rect b) {
     return !(a.x + a.w <= b.x ||

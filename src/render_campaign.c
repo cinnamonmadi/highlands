@@ -17,13 +17,14 @@ void render_map(CampaignState* state) {
         .x = (int)(state->camera_position.x / TILE_SIZE),
         .y = (int)(state->camera_position.y / TILE_SIZE)
     };
+    int top_tile_height = ((render_start.y * TILE_SIZE) - state->camera_position.y) + TILE_SIZE; // Calculates the actual height rendered of the topmost row of visible tiles
     vec2 render_size = (vec2) {
-        .x = ceil(SCREEN_WIDTH / (float)TILE_SIZE) + (int)(state->camera_position.x % TILE_SIZE == 0),
-        .y = ceil(SCREEN_HEIGHT / (float)TILE_SIZE) + (int)(state->camera_position.y % TILE_SIZE == 0)
+        .x = ceil(SCREEN_WIDTH / (float)TILE_SIZE) + (int)(state->camera_position.x % TILE_SIZE != 0),
+        .y = ceil((SCREEN_HEIGHT - top_tile_height) / (float)TILE_SIZE) + 1
     };
 
-    for(int y = render_start.y; y < render_size.y; y++){
-        for(int x = render_start.x; x < render_size.x; x++){
+    for(int y = render_start.y; y < render_start.y + render_size.y; y++){
+        for(int x = render_start.x; x < render_start.x + render_size.x; x++){
             vec2 render_pos = vec2_sub(
                                 vec2_scale((vec2) { .x = x, .y = y }, TILE_SIZE),
                                 state->camera_position);

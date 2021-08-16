@@ -33,6 +33,7 @@ float dps = 0.0f;
 // Game state variables
 CampaignState state;
 
+void input();
 void render();
 
 bool engine_init();
@@ -50,15 +51,31 @@ int main() {
     state = campaign_state_init();
 
     while(engine_running) {
-        SDL_Event e;
-        while(SDL_PollEvent(&e) != 0) {
-            if(e.type == SDL_QUIT) {
-                engine_running = false;
-            }
-        }
+        input();
+
+        campaign_state_update(&state, delta);
 
         render();
         engine_clock_tick();
+    }
+}
+
+void input() {
+    SDL_Event e;
+    while(SDL_PollEvent(&e) != 0) {
+        if(e.type == SDL_QUIT) {
+            engine_running = false;
+        } else if(SDL_GetWindowGrab(window) == SDL_TRUE) {
+            if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE) {
+                SDL_SetWindowGrab(window, SDL_FALSE);
+            } else {
+                campaign_state_handle_input(&state, e);
+            }
+        } else {
+            if(e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
+                SDL_SetWindowGrab(window, SDL_TRUE);
+            }
+        }
     }
 }
 
@@ -104,7 +121,7 @@ bool engine_init() {
         return false;
     }
 
-    engine_set_resolution(1280, 720);
+    // engine_set_resolution(1280, 720);
 
     render_init();
 

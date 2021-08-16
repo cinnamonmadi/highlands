@@ -15,6 +15,8 @@ vec2 vec2_sub(vec2 a, vec2 b);
 vec2 vec2_scale(vec2 v, float s);
 vec2 vec2_normalized(vec2 v);
 float vec2_length(vec2 v);
+vec2 vec2_clamp(vec2 value, vec2 min, vec2 max);
 
+int clamp(int value, int lower, int upper);
 bool is_rect_collision(SDL_Rect a, SDL_Rect b);
 bool is_point_in_rect(vec2 v, SDL_Rect r);
