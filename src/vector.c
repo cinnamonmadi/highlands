@@ -15,13 +15,17 @@ vec2 vec2_sub(vec2 a, vec2 b) {
     return (vec2) { .x = a.x - b.x, .y = a.y - b.y };
 }
 
-vec2 vec2_scale(vec2 v, float s) {
-    return (vec2) { .x = (int)(v.x * s), .y = (int)(v.y * s) };
+vec2 vec2_mult(vec2 v, float s) {
+    return (vec2) { .x = v.x * s, .y = v.y * s };
 }
 
 vec2 vec2_normalized(vec2 v) {
     float length = vec2_length(v);
-    return (vec2) { .x = v.x / length, .y = v.y / length };
+    return (vec2) { .x = v.x / length, v.y / length };
+}
+
+vec2 vec2_scaled(vec2 v, float s) {
+    return vec2_mult(vec2_normalized(v), s);
 }
 
 vec2 vec2_direction(vec2 a, vec2 b) {
@@ -50,8 +54,8 @@ SDL_Rect to_rect(vec2 a, vec2 b) {
     return (SDL_Rect) {
         .x = min(a.x, b.x),
         .y = min(a.y, b.y),
-        .w = abs(a.x - b.x),
-        .h = abs(a.y - b.y)
+        .w = abs((int)(a.x - b.x)),
+        .h = abs((int)(a.y - b.y))
     };
 }
 

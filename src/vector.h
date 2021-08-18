@@ -5,8 +5,8 @@
 #include <stdbool.h>
 
 typedef struct vec2 {
-    int x;
-    int y;
+    float x;
+    float y;
 } vec2;
 
 extern const vec2 VEC2_NULL;
@@ -14,8 +14,9 @@ extern const vec2 VEC2_ZERO;
 
 vec2 vec2_sum(vec2 a, vec2 b);
 vec2 vec2_sub(vec2 a, vec2 b);
-vec2 vec2_scale(vec2 v, float s);
+vec2 vec2_mult(vec2 v, float s);
 vec2 vec2_normalized(vec2 v);
+vec2 vec2_scaled(vec2 v, float s);
 vec2 vec2_direction(vec2 a, vec2 b);
 float vec2_length(vec2 v);
 float vec2_distance(vec2 a, vec2 b);

@@ -102,8 +102,8 @@ void render() {
 
 bool engine_init(int argc, char** argv) {
     bool init_fullscreened = false;
-    int resolution_width = 640;
-    int resolution_height = 360;
+    int resolution_width = 1280;
+    int resolution_height = 720;
 
     // Parse system arguments
     for(int i = 1; i < argc; i++) {
