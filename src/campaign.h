@@ -34,6 +34,7 @@ void campaign_state_handle_input(CampaignState* state, SDL_Event e);
 void campaign_state_update(CampaignState* state, float delta);
 void campaign_state_select(CampaignState* state);
 
+void campaign_state_update_units(CampaignState* state, float delta);
+
 Unit unit_init(vec2 position);
-void unit_update(Unit* unit, float delta);
 SDL_Rect unit_rect(Unit* unit);

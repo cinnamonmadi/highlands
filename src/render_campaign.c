@@ -50,6 +50,8 @@ void render_units(CampaignState* state) {
         // Get the units screen rectangle
         vec2 unit_render_pos = vec2_sub(state->units[i].position, state->camera_position);
         SDL_Rect render_rect = unit_rect(&state->units[i]);
+        unit_render_pos.x = unit_render_pos.x - (render_rect.w / 2);
+        unit_render_pos.y = unit_render_pos.y - (render_rect.h / 2);
         render_rect.x = unit_render_pos.x;
         render_rect.y = unit_render_pos.y;
 

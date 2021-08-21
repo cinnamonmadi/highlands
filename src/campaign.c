@@ -11,6 +11,8 @@ const int CAMERA_SPEED = 300;
 const int UNIT_CAPACITY = 256;
 const int UNIT_SPEED = 150;
 const int UNIT_MIN_TARGET_DISTANCE = 10;
+const int UNIT_PUSH_RADIUS = 12;
+const int UNIT_PUSH_FORCE = 150;
 
 // Campaign state functions
 
@@ -40,9 +42,9 @@ CampaignState campaign_state_init() {
     state.camera_max = (vec2) { .x = (TILE_SIZE * state.map_width) - SCREEN_WIDTH, .y = (TILE_SIZE * state.map_height) - SCREEN_HEIGHT };
 
     state.units = malloc(UNIT_CAPACITY * sizeof(Unit));
-    state.units[0] = unit_init((vec2){ .x = 10, .y = 10 });
-    state.units[1] = unit_init((vec2){ .x = 40, .y = 25 });
-    state.units[2] = unit_init((vec2){ .x = 25, .y = 40 });
+    state.units[0] = unit_init((vec2){ .x = 32, .y = 32 });
+    state.units[1] = unit_init((vec2){ .x = 32, .y = 64 });
+    state.units[2] = unit_init((vec2){ .x = 64, .y = 32 });
     state.unit_size = 3;
 
     return state;
@@ -104,8 +106,35 @@ void campaign_state_update(CampaignState* state, float delta) {
         state->drag_end = vec2_sum(state->mouse_pos, state->camera_position);
     }
 
+    campaign_state_update_units(state, delta);
+}
+
+void campaign_state_update_units(CampaignState* state, float delta) {
     for(int i = 0; i < state->unit_size; i++) {
-        unit_update(&state->units[i], delta);
+        vec2 velocity = VEC2_ZERO;
+        if(!vec2_equals(state->units[i].target, VEC2_NULL)) {
+            velocity = vec2_mult(vec2_direction(state->units[i].position, state->units[i].target), UNIT_SPEED);
+        }
+
+        // Calculate collision forces
+        for(int j = 0; j < state->unit_size; j++) {
+            if(i == j) {
+                continue;
+            }
+
+            const float distance = vec2_distance(state->units[i].position, state->units[j].position);
+            if (distance <= UNIT_PUSH_RADIUS) {
+                const int push_force_magnitude = (1.0 - (distance / UNIT_PUSH_RADIUS)) * (UNIT_PUSH_FORCE);
+                const vec2 push_force = vec2_mult(vec2_direction(state->units[j].position, state->units[i].position), push_force_magnitude);
+                velocity = vec2_sum(velocity, push_force);
+            }
+        }
+
+        state->units[i].position = vec2_sum(state->units[i].position, vec2_mult(velocity, delta));
+
+        if(vec2_distance(state->units[i].position, state->units[i].target) <= UNIT_MIN_TARGET_DISTANCE) {
+            state->units[i].target = VEC2_NULL;
+        }
     }
 }
 
@@ -131,23 +160,12 @@ Unit unit_init(vec2 position) {
     };
 }
 
-void unit_update(Unit* unit, float delta) {
-    if(!vec2_equals(unit->target, VEC2_NULL)) {
-        vec2 velocity = vec2_mult(vec2_direction(unit->position, unit->target), UNIT_SPEED);
-        unit->position = vec2_sum(unit->position, vec2_mult(velocity, delta));
-
-        if(vec2_distance(unit->position, unit->target) <= UNIT_MIN_TARGET_DISTANCE) {
-            unit->target = VEC2_NULL;
-        }
-    }
-}
-
 SDL_Rect unit_rect(Unit* unit) {
     const SpriteData* unit_sprite_data = &sprite_data[unit->animation.sprite];
 
     return (SDL_Rect){
-        .x = unit->position.x,
-        .y = unit->position.y,
+        .x = unit->position.x - (unit_sprite_data->frame_size[0] / 2),
+        .y = unit->position.y - (unit_sprite_data->frame_size[1] / 2),
         .w = unit_sprite_data->frame_size[0],
         .h = unit_sprite_data->frame_size[1]
     };
