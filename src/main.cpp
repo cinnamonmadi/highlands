@@ -1,6 +1,6 @@
 #include "global.hpp"
-#include "sprite.hpp"
 #include "render.hpp"
+#include "campaign.hpp"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
@@ -28,6 +28,7 @@ float deltas = 0.0f;
 float dps = 0.0f;
 
 void input();
+void update();
 void render();
 
 bool engine_init(int argc, char** argv);
@@ -36,7 +37,7 @@ void engine_set_resolution(int width, int height);
 void engine_toggle_fullscreen();
 void engine_clock_tick();
 
-Animation prince = Animation(SPRITE_PRINCE);
+Campaign campaign;
 
 int main(int argc, char** argv) {
     if(!engine_init(argc, argv)) {
@@ -45,9 +46,7 @@ int main(int argc, char** argv) {
 
     while(engine_running) {
         input();
-
-        prince.update(delta);
-
+        update();
         render();
         engine_clock_tick();
     }
@@ -62,14 +61,28 @@ void input() {
     while(SDL_PollEvent(&e) != 0) {
         if(e.type == SDL_QUIT) {
             engine_running = false;
+        } else if(SDL_GetWindowGrab(window) == SDL_TRUE) {
+            if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE) {
+                SDL_SetWindowGrab(window, SDL_FALSE);
+            } else {
+                campaign.handle_input(e);
+            }
+        } else {
+            if(e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
+                SDL_SetWindowGrab(window, SDL_TRUE);
+            }
         }
     }
+}
+
+void update() {
+    campaign.update(delta);
 }
 
 void render() {
     render_clear();
 
-    render_sprite_animation(prince, vec2(32, 32));
+    campaign.render();
 
     render_text(("FPS " + std::to_string(fps) + " DPS " + std::to_string(dps)).c_str(), COLOR_WHITE, 0, 0);
     render_present();

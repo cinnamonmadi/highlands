@@ -6,6 +6,10 @@ typedef struct vec2 {
     float x;
     float y;
 
+    vec2() {
+        this->x = 0.0f;
+        this->y = 0.0f;
+    }
     vec2(int x, int y) {
         this->x = x;
         this->y = y;
@@ -22,6 +26,9 @@ typedef struct vec2 {
     inline bool operator==(const vec2& other) const {
         return x == other.x && y == other.y;
     }
+    inline bool operator!=(const vec2& other) const {
+        return !(*this == other);
+    }
     inline float length() const {
         return sqrt((x * x) + (y * y));
     }
@@ -37,6 +44,9 @@ typedef struct vec2 {
     }
     inline vec2 scaled(const float& scale) const {
         return (*this).normalized() * scale;
+    }
+    inline vec2 clamp(const vec2& lower, const vec2& upper) const {
+        return vec2(fmin(fmax(x, lower.x), upper.x), fmin(fmax(y, lower.y), upper.y));
     }
 } vec2;
 

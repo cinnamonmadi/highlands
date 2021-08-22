@@ -24,7 +24,7 @@ bool render_init() {
         return false;
     }
 
-    sprite_textures = (SpriteTexture*) malloc(SPRITE_COUNT * sizeof(SpriteTexture));
+    sprite_textures = new SpriteTexture[SPRITE_COUNT];
     for(int i = 0; i < SPRITE_COUNT; i++) {
         SDL_Surface* loaded_surface = IMG_Load(sprite_data[i].path);
         if(loaded_surface == NULL) {
