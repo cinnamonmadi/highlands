@@ -3,6 +3,7 @@
 typedef enum Sprite {
     SPRITE_TILESET,
     SPRITE_PRINCE,
+    SPRITE_ROCK,
     SPRITE_COUNT
 } Sprite;
 
@@ -18,9 +19,9 @@ typedef struct Animation {
     int frame;
     float timer;
     float frame_duration;
+
+    Animation(Sprite sprite);
+    void update(float delta);
 } Animation;
 
 extern const SpriteData sprite_data[SPRITE_COUNT];
-
-Animation sprite_animation_init(Sprite sprite);
-void sprite_animation_update(Animation* animation, float delta);

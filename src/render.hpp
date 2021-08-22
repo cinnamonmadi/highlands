@@ -1,11 +1,10 @@
 #pragma once
 
-#include "sprite.h"
-#include "vector.h"
+#include "sprite.hpp"
+#include "vector.hpp"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-#include <stdbool.h>
 
 extern const SDL_Color COLOR_WHITE;
 

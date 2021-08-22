@@ -1,6 +1,6 @@
-#include "render.h"
-#include "global.h"
-#include <stdio.h>
+#include "render.hpp"
+#include "global.hpp"
+#include <iostream>
 
 const SDL_Color COLOR_WHITE = (SDL_Color){ .r = 255, .g = 255, .b = 255, .a = 255 };
 
@@ -24,7 +24,7 @@ bool render_init() {
         return false;
     }
 
-    sprite_textures = malloc(SPRITE_COUNT * sizeof(SpriteTexture));
+    sprite_textures = (SpriteTexture*) malloc(SPRITE_COUNT * sizeof(SpriteTexture));
     for(int i = 0; i < SPRITE_COUNT; i++) {
         SDL_Surface* loaded_surface = IMG_Load(sprite_data[i].path);
         if(loaded_surface == NULL) {
@@ -68,13 +68,13 @@ void render_present() {
 void render_text(const char* text, SDL_Color color, int x, int y) {
     SDL_Surface* text_surface = TTF_RenderText_Solid(debug_font, text, color);
     if(text_surface == NULL) {
-        printf("Unable to render text to surface! SDL Error: %s\n", TTF_GetError());
+        std::cout << "Unable to render text to surface! SDL Error " << TTF_GetError() << std::endl;
         return;
     }
 
     SDL_Texture* text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
     if(text_texture == NULL) {
-        printf("Unable to create text texture! SDL Error: %s\n", SDL_GetError());
+        std::cout << "Unable to create text texture! SDL Error " << SDL_GetError() << std::endl;
         return;
     }
 
@@ -108,8 +108,8 @@ void render_sprite_frame(Sprite sprite, int frame, vec2 position) {
         .h = sprite_data[sprite].frame_size[1]
     };
     SDL_Rect dest_rect = (SDL_Rect) {
-        .x = position.x,
-        .y = position.y,
+        .x = (int)position.x,
+        .y = (int)position.y,
         .w = source_rect.w,
         .h = source_rect.h
     };
