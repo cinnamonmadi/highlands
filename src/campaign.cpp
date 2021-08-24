@@ -1,6 +1,7 @@
 #include "campaign.hpp"
 
 #include "global.hpp"
+#include <iostream>
 
 const int TILE_SIZE = 32;
 const int CAMERA_SPEED = 300;
@@ -31,6 +32,19 @@ Campaign::Campaign() {
     camera_position = VEC2_ZERO;
     camera_velocity = VEC2_ZERO;
     camera_max = vec2((TILE_SIZE * map_width) - SCREEN_WIDTH, (TILE_SIZE * map_height) - SCREEN_HEIGHT);
+
+    ecs.register_component<vec2>();
+
+    Entity unit = ecs.create_entity();
+    Entity obstacle = ecs.create_entity();
+
+    ecs.add_component(unit, vec2(10, 10));
+    ecs.add_component(obstacle, vec2(20, 20));
+
+    vec2 unit_position = ecs.get_component<vec2>(unit);
+    std::cout << unit_position.x << ", " << unit_position.y << std::endl;
+    vec2 obstacle_position = ecs.get_component<vec2>(obstacle);
+    std::cout << obstacle_position.x << ", " << obstacle_position.y << std::endl;
 }
 
 Campaign::~Campaign() {
@@ -99,5 +113,12 @@ void Campaign::render() {
             vec2 render_pos = (vec2(x, y) * TILE_SIZE) - camera_position;
             render_sprite_frame(SPRITE_TILESET, map[y][x], render_pos);
         }
+    }
+
+    // Render drag select box
+    if(drag_start != VEC2_NULL) {
+        SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+        SDL_Rect drag_rect = to_rect(drag_start - camera_position, drag_end - camera_position);
+        SDL_RenderDrawRect(renderer, &drag_rect);
     }
 }

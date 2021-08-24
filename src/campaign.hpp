@@ -2,6 +2,7 @@
 
 #include "render.hpp"
 #include "vector.hpp"
+#include "ecs.hpp"
 #include <SDL2/SDL.h>
 
 class Campaign {
@@ -24,4 +25,6 @@ class Campaign {
         vec2 camera_position;
         vec2 camera_velocity;
         vec2 camera_max;
+
+        ECS ecs;
 };

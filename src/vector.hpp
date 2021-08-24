@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SDL2/SDL.h>
 #include <cmath>
 
 typedef struct vec2 {
@@ -52,3 +53,8 @@ typedef struct vec2 {
 
 extern const vec2 VEC2_NULL;
 extern const vec2 VEC2_ZERO;
+
+SDL_Rect to_rect(const vec2& a, const vec2& b);
+bool is_rect_collision(const SDL_Rect& a, const SDL_Rect& b);
+bool is_rect_in_screen(const SDL_Rect& rect);
+bool is_point_in_rect(const vec2& point, const SDL_Rect& rect);
